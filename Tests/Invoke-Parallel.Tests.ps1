@@ -13,6 +13,9 @@ if($env:APPVEYOR_REPO_BRANCH -and $env:APPVEYOR_REPO_BRANCH -notlike "master")
 $PSVersion = $PSVersionTable.PSVersion.Major
 Import-Module $PSScriptRoot\..\Invoke-Parallel\Invoke-Parallel.psd1 -Force
 
+$a = "Hello"
+$longvar = "World!"
+
 Describe "Invoke-Parallel PS$PSVersion" {
     
     Context 'Strict mode' { 
@@ -33,16 +36,13 @@ Describe "Invoke-Parallel PS$PSVersion" {
             $OutError[0].ToString() | Should Be "A Fake Error!"
         }
 
-        It 'should import variables with one letter name' {
-            $a = "Hello"
+        It 'should import variables with one letter name' {            
             0 | Invoke-Parallel @Verbose -ImportVariables -ScriptBlock {
                 $a
             } | Should Be "Hello"
         }
 
         It 'should import all variables' {
-            $a = "Hello"
-            $longvar = "World!"
             0 | Invoke-Parallel @Verbose -ImportVariables -ScriptBlock {
                 "$a $longvar"
             } | Should Be "Hello World!"
